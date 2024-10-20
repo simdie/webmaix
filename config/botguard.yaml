@@ -1,0 +1,46 @@
+min_ver: '4.0.0'
+ja4:
+  allow: []
+  deny:
+    - { b: 'e8f1e7e78f70' }  # Example fingerprints
+    - { b: '9dc949149365' }  # CensysInspect/Go-http-client
+    - { b: '85036bcba153' }
+    - { b: 'c7886603b240' }  # Python requests 3.10
+    - { b: 'e8a523a41297' }  # Googlebot
+    - { b: '231e334592e8' }  # Bingbot
+    - { b: '76e208dd3e22' }  # curl
+    - { b: '1ce71f0edbb1' }  # Java 8.0
+    - { b: 'e18388e7f3a3' }  # Bingbot (duplicate)
+    - { b: '77b304177063' }
+    - { b: '9e336f1a53ca' }
+    - { b: 'bd868743f55c' }
+    - { b: '834380eab35e' }
+    - { b: '730fb1b0ac6a' }  # Python requests 2.27
+    - { b: 'd524c25c267f' }
+    - { b: '018971650b2c' }  # Python aichttp 3.9
+    - { b: '26729b4bf6f3' }
+    - { b: 'cbb2034c60h8' }  # Go 1.22
+    - { b: '75366a718a82' }
+    - { b: '08d6d9b33cd7' }
+    - { b: 'a49936992045' }
+    - { b: '131602cb7446' }
+    - { b: '2d7513195f68' }
+  user_agent:
+    allow:
+      - { browser: 'Chrome', version: '>= 120' }
+      - { browser: 'Firefox', version: '>= 120.0' }
+      - { browser: 'Edge', version: '>= 120.0' }
+      - { browser: 'Opera', version: '>= 120.0' }
+      - { browser: 'Safari', version: '>= 16.0' }
+    deny:
+      - { browser: 'Headless' }
+      - { browser: 'googlebot' }  # Googlebot (case insensitive)
+      - { browser: 'bingbot' }     # Bingbot (case insensitive)
+      - { browser: 'spamhaus' }    # Spamhaus bot (case insensitive)
+      - { browser: 'cyscne' }      # Cyscne bot (case insensitive)
+      - { browser: 'curl' }        # cURL (case insensitive)
+      - { browser: 'python-requests' } # Python requests (case insensitive)
+      - { browser: 'java' }        # Java user agents (case insensitive)
+      - { browser: 'wget' }        # Wget user agents (case insensitive)
+      - { browser: 'ruby' }        # Ruby user agents (case insensitive)
+      # Add more known malicious user agents here
