@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// BotGuardConfig struct for YAML file configuration
+// BotGuardConfig struct for YAML file configuration.
 type BotGuardConfig struct {
 	MinVer string `yaml:"min_ver"`
 	Ja4    struct {
