@@ -10,8 +10,8 @@ import (
 
 // TurnstileResponse represents the response structure from Cloudflare's Turnstile verification.
 type TurnstileResponse struct {
-	Success bool   `json:"success"`
-	Error   string `json:"error-codes,omitempty"`
+	Success bool     `json:"success"`
+	Error   []string `json:"error-codes,omitempty"` // Change to slice to capture multiple errors
 }
 
 // TurnstileVerify handles Turnstile token verification.
@@ -35,8 +35,8 @@ func TurnstileVerify(token string) (bool, error) {
 // TurnstilePreloadMiddleware runs Turnstile validation before page access.
 func TurnstilePreloadMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Check for token in query parameters
-		token := r.URL.Query().Get("cf-turnstile-response")
+		// Check for token in form data (not URL query)
+		token := r.FormValue("cf-turnstile-response")
 		if token == "" {
 			http.Error(w, "Turnstile token missing", http.StatusForbidden)
 			return
@@ -45,7 +45,7 @@ func TurnstilePreloadMiddleware(next http.Handler) http.Handler {
 		// Verify Turnstile
 		success, err := TurnstileVerify(token)
 		if err != nil || !success {
-			http.Error(w, "Turnstile verification failed", http.StatusForbidden)
+			http.Error(w, "Turnstile verification failed: "+err.Error(), http.StatusForbidden)
 			return
 		}
 
