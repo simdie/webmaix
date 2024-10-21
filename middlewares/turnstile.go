@@ -37,15 +37,18 @@ func TurnstilePreloadMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check for token in form data (not URL query)
 		token := r.FormValue("cf-turnstile-response")
+
 		if token == "" {
-			http.Error(w, "Turnstile token missing", http.StatusForbidden)
+			// If token is missing, redirect to the challenge page
+			http.Redirect(w, r, "/challenge", http.StatusSeeOther)
 			return
 		}
 
 		// Verify Turnstile
 		success, err := TurnstileVerify(token)
 		if err != nil || !success {
-			http.Error(w, "Turnstile verification failed: "+err.Error(), http.StatusForbidden)
+			// If verification fails, redirect to the challenge page
+			http.Redirect(w, r, "/challenge", http.StatusSeeOther)
 			return
 		}
 
