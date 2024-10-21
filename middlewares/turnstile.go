@@ -3,7 +3,6 @@ package middlewares
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -15,44 +14,42 @@ type TurnstileResponse struct {
 	Error   string `json:"error-codes,omitempty"`
 }
 
-// TurnstileMiddleware verifies the Turnstile token.
-func TurnstileMiddleware(next http.Handler) http.Handler {
+// TurnstileVerify handles Turnstile token verification.
+func TurnstileVerify(token string) (bool, error) {
+	secret := os.Getenv("TURNSTILE_SECRET_KEY")
+	resp, err := http.PostForm("https://challenges.cloudflare.com/turnstile/v0/siteverify",
+		url.Values{"secret": {secret}, "response": {token}})
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	var turnstileResp TurnstileResponse
+	if err := json.NewDecoder(resp.Body).Decode(&turnstileResp); err != nil {
+		return false, err
+	}
+
+	return turnstileResp.Success, nil
+}
+
+// TurnstilePreloadMiddleware runs Turnstile validation before page access.
+func TurnstilePreloadMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := r.FormValue("cf-turnstile-response")
+		// Check for token in query parameters
+		token := r.URL.Query().Get("cf-turnstile-response")
 		if token == "" {
-			http.Error(w, "Turnstile token missing", http.StatusBadRequest)
+			http.Error(w, "Turnstile token missing", http.StatusForbidden)
 			return
 		}
 
-		// Replace with your actual Turnstile secret key
-		secret := os.Getenv("TURNSTILE_SECRET_KEY")
-
-		// Create the request to verify the token
-		resp, err := http.PostForm("https://challenges.cloudflare.com/turnstile/v0/siteverify",
-			url.Values{"secret": {secret}, "response": {token}})
-
-		if err != nil {
-			log.Printf("Turnstile verification error: %v", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-		defer resp.Body.Close()
-
-		// Decode the Turnstile response
-		var turnstileResp TurnstileResponse
-		if err := json.NewDecoder(resp.Body).Decode(&turnstileResp); err != nil {
-			log.Printf("Error decoding Turnstile response: %v", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		// Check if Turnstile verification was successful
-		if !turnstileResp.Success {
+		// Verify Turnstile
+		success, err := TurnstileVerify(token)
+		if err != nil || !success {
 			http.Error(w, "Turnstile verification failed", http.StatusForbidden)
 			return
 		}
 
-		// Call the next handler if Turnstile verification is successful
+		// Serve the next handler if Turnstile verification is successful
 		next.ServeHTTP(w, r)
 	})
 }
