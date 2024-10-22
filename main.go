@@ -139,6 +139,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	// Handle authentication with Turnstile validation
+	// mux.Handle("/auth", TurnstilePreloadMiddleware(http.HandlerFunc(authHandler)))
 	mux.Handle("/auth", TurnstilePreloadMiddleware(http.HandlerFunc(authHandler)))
 
 	// Handle the challenge route

