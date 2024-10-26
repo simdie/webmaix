@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link href="/static/css/output.css" rel="stylesheet">
     <script>
@@ -27,15 +26,11 @@
                 alert("Token is missing, please try again.");
             }
         }
-
-
-
     </script>
 </head>
 
 <body class="flex flex-col justify-center items-center h-screen w-screen">
-    <div class="cf-turnstile" data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb" data-callback="onTurnstileSuccess"
-        data-action="verify"></div>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAAx8Hjjc0l14Qawb" data-callback="onTurnstileSuccess" data-action="verify"></div>
 </body>
 
 </html>
