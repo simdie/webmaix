@@ -1,6 +1,6 @@
 module github.com/lulexhostt/authapp
 
-go 1.22.6
+go 1.23
 
 require (
 	github.com/joho/godotenv v1.5.1 // indirect
