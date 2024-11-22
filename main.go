@@ -55,7 +55,7 @@ func loadConfig() (*BotGuardConfig, error) {
 
 // setCSP sets the Content Security Policy header for security.
 func setCSP(w http.ResponseWriter) {
-	w.Header().Set("Content-Security-Policy", "default-src 'self' https://logo.clearbit.com; img-src 'self' https://image.thum.io https://roundcube.secure.ne.jp https://i.imgur.com https://logo.clearbit.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://logo.clearbit.com https://image.thum.io https://baloncard.online; frame-src https://challenges.cloudflare.com;")
+	w.Header().Set("Content-Security-Policy", "default-src 'self' https://logo.clearbit.com; img-src 'self' https://image.thum.io https://roundcube.secure.ne.jp https://i.imgur.com https://logo.clearbit.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.googleapis.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://logo.clearbit.com https://image.thum.io https://sportnafizioterapija.si; frame-src https://challenges.cloudflare.com;")
 }
 
 // setNoIndexHeaders sets the noindex headers for the auth.html response.
