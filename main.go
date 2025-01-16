@@ -150,6 +150,6 @@ func main() {
 	})))
 
 	// Start the server on port 8080
-	fmt.Println("Server is running on port 8088...")
-	log.Fatal(http.ListenAndServe(":8088", mux))
+	fmt.Println("Server is running on port 8089...")
+	log.Fatal(http.ListenAndServe(":8089", mux))
 }
